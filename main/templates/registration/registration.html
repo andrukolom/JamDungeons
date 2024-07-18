@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="width: 30%;">
+    <form action="/registration/" method="post">
+        {% csrf_token %}
+        <p class="logo text-center" style="font-size: 42px;">Регистрация</p>
+        {{ reg_form.as_p }}
+        <button class="btn btn-success text-white" style="width: 100%" type="submit"><strong>Зарегистрироваться</strong></button>
+    </form>
+</div>
+{% endblock %}

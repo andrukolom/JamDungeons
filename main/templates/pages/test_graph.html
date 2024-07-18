@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <style>
+    #cy {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        visibility: collapse;
+    }
+    #test{
+
+        position: relative;
+    }
+    </style>
+
+
+
+
+<div id="innerCy" is_graph="false">
+    <div id="cy"></div>
+</div>
+<script src="{% static 'js/cytoscape.min.js' %}"></script>
+
+<button id="test">test</button>
+
+<script>
+
+    graph();
+
+    function off_graph(){
+        inner = $('div#innerCy')
+        cy = document.getElementById('cy')
+
+        if (inner.attr('is_graph') == 'false'){
+            cy.style.visibility = "visible";
+            inner.attr('is_graph', true);
+        }
+        else {
+            cy.style.visibility = "collapse";
+            inner.attr('is_graph', false);
+
+        }
+    }
+
+    let test = document.getElementById('test')
+    test.addEventListener('click', off_graph)
+
+
+    function graph() {
+        let nodes = JSON.parse('{{ nodes|escapejs }}');
+        let edges = JSON.parse('{{ edges|escapejs }}');
+
+        let cy = window.cy = cytoscape({
+            container: document.getElementById('cy'),
+
+            style: [
+                    {
+						selector: 'node',
+						style: {
+							'content': 'data(name)'
+						}
+					},
+
+					{
+						selector: 'edge',
+						style: {
+							'curve-style': 'bezier',
+							'target-arrow-shape': 'triangle'
+
+
+						}
+					}
+				],
+
+				elements: {
+					nodes: nodes,
+					edges: edges
+				},
+
+				layout: {
+					name: 'grid'
+				}
+			});
+
+
+    }
+
+
+
+</script>
+{% endblock %}

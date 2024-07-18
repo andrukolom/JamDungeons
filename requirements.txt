@@ -1,0 +1,8 @@
+django==5.0.3
+djangorestframework==3.14.0
+aiogram==3.4.1
+load_dotenv==0.1.0
+pillow==10.3.0
+celery
+redis
+django_celery_beat

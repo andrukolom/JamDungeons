@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block pagename %}
+{% endblock %}
+
+{% block content %}
+    <div>
+        {% for complain in complaints %}
+        <p style="margin-top: 50px">Жалоба{% if complain.username %} от {{ complain.username }}{% endif %}</p>
+        <p>quest_id - {{ complain.quest_id }}</p>
+        <p>location_id - {{ complain.location_id }}</p>
+        <p>Сообщение - {{ complain.message }}</p>
+        <a href="/delete_complaint/{{ complain.id }}">Перейти в квест</a>
+        {% endfor %}
+    </div>
+{% endblock %}

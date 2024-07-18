@@ -1,0 +1,35 @@
+$primary:    #FF9100;
+$secondary:  #A9A594;
+$success:    #1B7C0B;
+$danger:     #A40B0B;
+$warning:    #BBA145;
+$info:       #539CB4;
+$light:      #CBC7C5;
+$dark:       #5C5C5C;
+$white:      #FFFFFF;
+
+$nav-link-color:                    #5C5C5C !important;
+$nav-link-hover-color:              #FF9100 !important;
+
+@import "../node_modules/bootstrap/scss/_functions";
+@import "../node_modules/bootstrap/scss/_variables";
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Russo+One&family=Unbounded:wght@700&display=swap");
+
+body {
+  font-family: "Rubik", sans-serif !important;
+}
+
+
+
+.card-body {
+  min-height: 60px;
+  min-width: 60px;
+}
+// $theme-colors: map-merge($theme-colors, $custom-colors);
+
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+
+
+

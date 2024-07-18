@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="container">
+        <span class="logo" style="font-size: 40px; ">Создание приключения</span>
+        <div class="row">
+                <label class="col-form-label">{{ quest_form.name.label }}:</label>
+        </div>
+        <div class="row align-items-center">
+            <div class="col">{{ quest_form.name }}</div>
+            <div class="col">
+                <span class="text-muted align-middle" style="font-size: 14px;"><i>Не более 64 символов. Квесты с названиями, содержащие запрещённые слова и форазы, будут удалены с сайта, а автор добавлен в чёрный список. <a class="link-info" href="{% url 'guide' %}">Подробнее</a></i></span>
+            </div>
+        </div>
+        <div class="row g-1 align-items-left" style="margin-top:10px;">
+            <div class="col col-auto">
+                <label class="col-form-label">{{ quest_form.description.label }}:</label>
+            </div>
+        </div>
+        <div class="row align-items-center" style="margin_top:10px;">
+            <div class="col">
+                {{ quest_form.description }}
+            </div>
+        </div>
+        <div class="row g-1 align-items-left" style="margin-top:10px;">
+            <div class="col col-auto">
+                <label class="col-form-label">{{ quest_form.tag.label }}:</label>
+            </div>
+        </div>
+        <div class="row align-items-center" style="margin_top:10px;">
+            <div class="col">
+                {{ quest_form.tag }}
+            </div>
+        </div>
+        <div class="row g-1 align-items-left" style="margin-top:10px;">
+            <label class="form-label">{{ quest_form.image.label }}</label>
+            {{ quest_form.image }}
+        </div>
+        <div class="row">
+            <span class="text-muted align-middle" style="margin-top:5px; font-size: 14px;"><i>Рекомендуем загружать изображения с соотношением сторон 1х1 и разрешением не менее 1024х1024.</i></span>
+        </div>
+    </div>
+    <div class="position-relative" style="margin-top: 40px;">
+        <button class="position-absolute top-50 end-0 col btn btn-primary text-start text-white" type="submit" style="width: 50%; height: 50px; border-radius: 2rem 0px 0px 2rem; font-size: 22px; padding-left: 30px;"><i><strong>Сохранить и продолжить</strong></i></button>
+    </div>
+</form>
+{% endblock %}

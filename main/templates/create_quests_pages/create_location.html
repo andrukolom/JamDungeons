@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+    <style>
+    #cy {
+        background-color: rgba(205, 214, 219, 0.8);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        visibility: collapse;
+        z-index: 2;
+    }
+    #graph_mode, #return_graph{
+
+        position: relative;
+        z-index: 3;
+    }
+
+    #return_graph{
+        visibility: collapse;
+    }
+    </style>
+
+<div id="innerCy" is_graph="false">
+    <div id="cy"></div>
+</div>
+<script src="{% static 'js/cytoscape.min.js' %}"></script>
+
+<script xmlns="http://www.w3.org/1999/html">
+
+
+    class Graph {
+        constructor(){
+            let nodes = JSON.parse('{{ nodes|escapejs }}');
+            let edges = JSON.parse('{{ edges|escapejs }}');
+
+             this.cy = window.cy = cytoscape({
+                container: document.getElementById('cy'),
+
+                style: [
+                        {
+                            selector: 'node',
+                            style: {
+                                'content': 'data(name)',
+                                'width': '25px',
+                                'height': '25px',
+                                'size': '10px'
+
+                            }
+                        },
+
+                        {
+                            selector: 'edge',
+                            style: {
+                                'curve-style': 'bezier',
+                                'target-arrow-shape': 'triangle',
+                                'content': 'data(name)'
+
+                            }
+                        }
+                    ],
+
+                    elements: {
+                        nodes: nodes,
+                        edges: edges
+                    },
+
+                    layout: {
+                    name: 'cose',
+                    }
+                });
+
+            this.cy.on('tap', 'node', function(){
+                try {
+                    window.location.replace(`${this.data('id')}`);
+                } catch(e){
+                    window.location.href = `${this.data('id')}`
+                }
+            });
+
+        }
+        return_graph(){
+            this.cy.zoom(2);
+            this.cy.center();
+        }
+
+    }
+
+    var graph = new Graph()
+
+    function return_graph(){
+
+        cy = document.getElementById('cy');
+        cy.reset()
+    }
+
+    function graph_mode(){
+        inner = $('div#innerCy')
+        cy = document.getElementById('cy')
+        button = document.getElementById('graph_mode')
+        button_return = document.getElementById('return_graph')
+
+        if (inner.attr('is_graph') == 'false'){
+            button.innerHTML = "Скрыть модель квеста"
+            cy.style.visibility = "visible";
+            button_return.style.visibility = "visible";
+            inner.attr('is_graph', true);
+        }
+        else {
+            button.innerHTML = "Показать модель квеста"
+            cy.style.visibility = "collapse";
+            button_return.style.visibility = "collapse";
+            inner.attr('is_graph', false);
+
+        }
+    }
+
+
+
+
+
+
+    function submit_connect(connect_id){
+        let select_result = document.getElementById('select_loc').value;
+        if (select_result == 'new'){
+            window.location.replace(`sketch/${connect_id}`);
+        }
+        else if (select_result == 'del'){
+            window.location.replace(`/create/delete_to_location/${connect_id}`);
+        }
+        else {
+            window.location.replace(`connect/${connect_id}/${select_result}`);
+        }
+    }
+
+    function modal(connect_id) {
+        let new_location_button = document.getElementById('new_location_button');
+        new_location_button.innerHTML = `<button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick=submit_connect(${connect_id})>Подтвердить</button>`;
+
+    }
+    function navigation(selectId) {
+        let navigation_result = document.getElementById(selectId).value;
+        window.location.replace(`${navigation_result}`);
+    }
+
+    function delete_connection(connect_id) {
+
+        window.location.replace(`/create/delete_connection/${connect_id}`);
+
+    }
+
+    function complete_quest(location_id) {
+
+        window.location.replace(`/create/complete/${location_id}`);
+
+    }
+
+</script>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="container">
+        <span class="logo" style="font-size: 40px; ">Создание приключения</span>
+        <div class="row">
+                <label class="col-form-label">{{ location_form.name.label }}:</label>
+        </div>
+        <div class="row align-items-center">
+            <div class="col">{{ location_form.name }}</div>
+            <div class="col">
+                <span class="text-muted align-middle" style="font-size: 14px;"><i>Не более 64 символов. При нарушении правилсодержания, квест будет удален с сайта, а автор добавлен в чёрный список. <a class="link-info" href="{% url 'guide' %}">Подробнее</a></i></span>
+            </div>
+        </div>
+        <div class="row g-1 align-items-left" style="margin-top:10px;">
+            <div class="col col-auto">
+                <label class="col-form-label">{{ location_form.history.label }}:</label>
+            </div>
+        </div>
+        <div class="row align-items-center" style="margin-bottom: 60px;">
+            <div class="col">
+                {{ location_form.history }}
+            </div>
+        </div>
+
+        <span class="logo" style="font-size: 40px;">Настройка действий</span>
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col col-auto"><label for="count_actions" class="col-form-label">{{ location_form.countActions.label }}:</label></div>
+            <div class="col col-1" id="count_actions">{{ location_form.countActions }}</div>
+            <div class="col" style="width: fill;"></div>
+            <div class="col col-4" id="final_location">
+                {{ location_form.final_location }}
+            </div>
+        </div>
+        <hr style="margin-bottom: 20px;">
+        {% if the_end != 1 %}
+            {% for action_item in location_form.actions %}
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col col-auto">
+                        <label class="col-form-label" style="padding-left: 40px;">{{ action_item.action.label }}:</label>
+                    </div>
+                    <div class="col col-5">
+                        {{ action_item.action }}
+                    </div>
+
+                    {% if action_item.to_location %}
+                        <div class="col-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" color="#1B7C0B" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                            <span class="align-middle" style="font-size:26px"></span>
+                            <span class="align-middle text-success" style="height: fill; font-size:20px">Действие настроено</span>
+                        </div>
+                        <div class="col" style="width: 80%;">
+                            <a href="{% url 'create_location' location_id=action_item.to_location%}"><button  type="button" class="btn btn-outline-success rounded-4" data-bs-target="#exampleModal" style="width:100%; height: 40px; font-size: 16px;">
+                                Перейти
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-right" viewBox="0 0 16 16">
+                                  <path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0z"></path>
+                                </svg>
+                            </button></a>
+                        </div>
+                        <div class="col-2">
+                            <button data-bs-toggle="modal" type="button" class="btn btn-secondary rounded-4 text-white" data-bs-target="#exampleModal" style="width:100%; height: 40px;" onclick="modal({{action_item.id}})">Редактировать связь</button>
+                        </div>
+                    {%else%}
+                        <div class="col-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" color="#A40B0B" fill="currentColor" class="align-middle bi-x-circle" viewBox="0 0 16 16">
+                              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                            <span class="align-middle" style="font-size:26px"></span>
+                            <span class="align-middle text-danger" style="height: fill; font-size:20px">Действие не настроено</span>
+                        </div>
+                        <div class="col" style="width: 80%;"></div>
+                        <div class="col-2">
+                            <button data-bs-toggle="modal" type="button" class="btn btn-info rounded-4 text-white" data-bs-target="#exampleModal" style="width:100%; height: 40px;" onclick="modal({{action_item.id}})">Настоить связь</button>
+                        </div>
+                    {% endif %}
+                        <div class="col-2">
+                            <button data-bs-toggle="modal" type="button" class="btn btn-danger rounded-4 text-white" data-bs-target="#exampleModal" style="width:100%; height: 40px;" onclick="delete_connection({{action_item.id}})">Удалить связь</button>
+                        </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="position-relative" style="margin-top: 50px; margin-bottom: 110px;">
+        <button class="position-absolute top-50 end-0 col btn btn-primary text-start text-white" type="submit" style="width: 50%; height: 50px; border-radius: 2rem 0px 0px 2rem; font-size: 22px; padding-left: 30px;"><i><strong>Сохранить и обновить страницу</strong></i></button>
+        <button class="position-absolute top-50 end-0 col btn btn-primary text-start text-white" id="graph_mode" type="button" onclick="complete_quest({{location_id}})" style="margin-top: 80px; width: 50%; height: 50px; border-radius: 2rem 0px 0px 2rem; font-size: 22px; padding-left: 30px;"><i><strong>Завершить</strong></i></button>
+    </div>
+</form>
+<!--<div class="row">-->
+<!--    <button class="position-absolute top-50 end-0 col btn btn-info text-white" style="margin-top: 50px; width: 50%; height: 50px; border-radius: 2rem 0px 0px 2rem; font-size: 22px; padding-left: 0px;" onclick="complete_quest({{location_id}})"><i><strong>Завершить квест</strong></i></button>-->
+<!--</div>-->
+<div class="row">
+
+</div>
+<div class="row">
+    <button class="position-absolute end-0 col btn btn-info text-start text-white" style="margin-top: 210px; width: 50%; height: 50px; border-radius: 2rem 0px 0px 2rem; font-size: 22px; padding-left: 30px;" id="return_graph" onclick="graph.return_graph()">Вернуть граф на старт</button>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Создание связи между сценами</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-select" aria-label="Large select example" id="select_loc">
+                        <option value="new" selected>Создать новую</option>
+                        {% for location in all_locations%}
+                            <option value={{location.id}}>{{location.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            <div class="modal-footer" id="new_location_button">
+                <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<style>
+    #cy {
+        background-color: rgba(205, 214, 219, 0.8);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        visibility: collapse;
+        z-index: 2;
+    }
+    #graph_mode{
+
+        position: relative;
+        z-index: 3;
+    }
+</style>

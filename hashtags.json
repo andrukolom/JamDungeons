@@ -1,0 +1,74 @@
+[
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Хоррор"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Фантастика"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Фэнтези"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Детектив"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Приключения"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Исторический"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Научно-популярный"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Романтика"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Комедия"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Драма"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Триллер"
+    }
+  },
+  {
+    "model": "main.hashtag",
+    "fields": {
+      "tag": "#Мистика"
+    }
+  }
+]

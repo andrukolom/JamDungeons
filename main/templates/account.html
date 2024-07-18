@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <span class="logo" style="font-size: 50px; ">Профиль</span>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col col-auto">
+            <div class="rounded-circle bg-dark" style="height: 15rem; width: 15rem;"></div>
+        </div>
+        <div class="col">
+            <div class="container" style="padding-top: 30px;">
+                <div class="row">
+                    <div class="col" >
+                        <p class="form-control" style="height: 100%; font-size: 2rem;">{{ user.username }}</p>
+                    </div>
+                    <div class="col col-auto">
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-white bi-pencil-square" style="font-size: 2rem;"></button>
+                    </div>
+                </div>
+                <div class="row align-items-center" style="margin-top: 20px;">
+                    <div class="col col-auto">
+                        <span style="font-size: 25px;">Уровень {{level}}</span>
+                    </div>
+                    <div class="col">
+                        <div class="rounded-pill progress" style="height: 20px;">
+                            <div class="rounded-pill progress-bar" role="progressbar" style="width: {{percent}}%;" aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                    <div class="col col-auto">
+                        <span class="text-light" style="font-size: 25px;">{{experience}}/1000 - {{percent}}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 60px;">
+        <ul class="nav nav-tabs">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#favourite" type="button" role="tab" aria-controls="favourite" aria-selected="true">ИЗБРАННОЕ</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="true">МОИ ПРОХОЖДЕНИЯ</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#created" type="button" role="tab" aria-controls="created" aria-selected="true">СОЗДАННЫЕ КВЕСТЫ</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#achievements" type="button" role="tab" aria-controls="achievements" aria-selected="true">ДОСТИЖЕНИЯ</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab" aria-controls="comments" aria-selected="true">ЖАЛОБЫ И КОММЕНТАРИИ</a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="favourite" role="tabpanel" aria-labelledby="favourite-tab">{% include 'account_pages/quest_list.html' %}</div>
+        <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">{% include 'account_pages/adventures.html' %}</div>
+        <div class="tab-pane fade" id="created" role="tabpanel" aria-labelledby="created-tab">{% include 'account_pages/created_quests.html' %}</div>
+        <div class="tab-pane fade" id="achievements" role="tabpanel" aria-labelledby="achievements-tab">{% include 'account_pages/achievements.html' %}</div>
+        <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">{% include 'account_pages/comments.html' %}</div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Изменить данные аккаунта</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" class="container">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col">
+                                    {{edit_user_form.username}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    {{edit_user_form.email}}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">Подтвердить</button>
+                        </form>
+                    </div>
+                <div class="modal-footer" id="new_location_button">
+                    <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

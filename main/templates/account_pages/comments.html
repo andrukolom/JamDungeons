@@ -1,0 +1,16 @@
+<div class="container" style="margin-top: 20px;">
+    <span class="logo" style="font-size: 26px; ">Обращения в поддержку:</span>
+    {% for item in support_messages %}
+    <div class="card" style="margin-top: 10px;">
+        <div class="card-header">
+            <span>Сообщение от {{ item.data }}</span>
+        </div>
+        <div class="card-body" style="min-height: 60px; min-width: 60px;">
+            <label class="form-label">Электронная почта:</label>
+            <span class="form-control" style="margin-bottom: 20px;">{{ item.email }}</span>
+            <label class="form-label">Содержание:</label>
+            <span class="form-control">{{ item.text }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>

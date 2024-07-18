@@ -1,0 +1,8 @@
+.cards-wrap {
+    display: flex;
+}
+
+.fit-image{
+    width: 100%;
+    object-fit: cover;
+}

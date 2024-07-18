@@ -1,0 +1,21 @@
+{
+  "name": "jamdungeons",
+  "version": "1.0.0",
+  "description": "questpool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.informatics.ru/2023-2024/online/s101/s101_2/project-iii/questpool.git"
+  },
+  "keywords": [
+    "quest"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.3.3"
+  }
+}

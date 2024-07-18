@@ -1,0 +1,10 @@
+<form class="w-500 px-4 py-3" method="post" action="/make_complaint/{{ quest_id }}/{{ location_id }}">
+    {% csrf_token %}
+
+    {% for field in complaintform %}
+        <div class="form-group form-inline">{{ field }}</div>
+    {% endfor %}
+    <div class="row mt-3">
+            <button type="submit" class="btn btn-primary btn-block">Отправить жалобу</button>
+    </div>
+</form>

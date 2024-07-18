@@ -1,0 +1,21 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Обащение в поддержку</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'support' %}" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                {{ supportform.email.label }}: {{ supportform.email }}
+                <div style="margin-top: 10px;"></div>
+                {{ supportform.message.label }}: {{ supportform.message }}
+                <p class="text-muted">Перед отправкой сохраните текст сообщения. При некорректрном адересе электронной почты, введённые данные сбросятся.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Закрыть</button>
+                <button type="submit" class="btn btn-primary text-white">Отправть сообщение</button>
+            </div>
+        </form>
+    </div>
+</div>

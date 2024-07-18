@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    textarea {
+        font-family:monospace;
+    }
+</style>
+{% endblock %}
+
+{% block pagename %}
+<div class="row">
+    <div class="col text-center">
+        <h2>Выбрать персонажа</h2><hr>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for character in characters %}
+            <div class="container text-right">
+                 <button class="btn btn-primary" type="submit" style="width:500px; height: 40px;" name="character" value="{{ character.id }}">{{ character.name }}</button>
+            </div>
+        {% endfor %}
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Имя" name="character_name">
+          <button class="btn btn-primary" type="submit" style="width:500px; height: 40px;" name="character" value="0">Создать нового</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

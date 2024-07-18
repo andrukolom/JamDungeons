@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+
+    <head>
+        <title>Tutorial 1: Getting Started</title>
+        <script src="/static/js/cytoscape.umd.js"></script>
+    </head>
+
+    <style>
+        #cy {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+    </style>
+
+    <body>
+        <div id="cy">
+        </div>
+        <script>
+            var cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: [
+                { data: { id: 'a' }},
+                { data: { id: 'b' }},
+                {
+                  data: {
+                    id: 'ab',
+                    source: 'a',
+                    target: 'b'
+                  }
+                },
+                {
+                  data: {
+                    id: 'aa',
+                    source: 'a',
+                    target: 'a'
+                  }
+                }],
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'shape': 'round-rectangle',
+                            'label': 'aojdsc pajpfdpmadw sgsegsegseg',
+                            'background-color': '#5E8F9A',
+                            'color': 'white',
+
+                            'width':'100%',
+                            'height':'60%',
+
+                            'text-halign': 'center',
+                            'text-valign': 'center',
+                            "text-max-width": "10",
+                            "text-wrap": 'wrap',
+                        },
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'curve-style': 'round-taxi',
+                            'target-arrow-shape': 'triangle'
+                        },
+                    },
+                ]
+            });
+        </script>
+    </body>
+</html>

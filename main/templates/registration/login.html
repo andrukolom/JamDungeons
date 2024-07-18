@@ -1,0 +1,22 @@
+<div class="modal-dialog" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Авторизация</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'login' %}" method="post">
+            <div class="modal-body">
+                {% csrf_token %}
+                <label class="form-label">Имя пользователя:</label>
+                {{ loginform.username }}
+                <label class="form-label" style="margin-top: 10px;">Пароль:</label>
+                {{ loginform.password }}
+                <a href="{% url 'registration' %}" class="text-info">Нет учётной записи? Зарегистрируйся!</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark text-white" data-bs-dismiss="modal">Закрыть</button>
+                <button type="submit" class="btn btn-success">Войти</button>
+            </div>
+        </form>
+    </div>
+</div>
