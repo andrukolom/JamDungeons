@@ -4,6 +4,12 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class CreateQuestForm(forms.Form):
+    agelimit = forms.ChoiceField(
+        choices=[(1, "меньше 12"), (2, "12-16"), (3, "> 16")],
+        widget=forms.RadioSelect,
+        label="Ограничение по возрасту",
+        required=False,
+    )
     name = forms.CharField(
         label="Название вашего квеста",
         max_length=64,
@@ -24,7 +30,8 @@ class CreateQuestForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "style": "width:fill; height: 70px;",
-                "placeholder": "Например: В этом подземелье тебе придётся разгадать загадки и головоломки, которые подготовил для тебя шабаш старых ведьм.",
+                "placeholder": "Например: В этом подземелье тебе придётся разгадать загадки и головоломки, "
+                "которые подготовил для тебя шабаш старых ведьм.",
             }
         ),
     )
@@ -35,7 +42,7 @@ class CreateQuestForm(forms.Form):
             attrs={
                 "class": "form-control",
                 "style": "width:fill; height: 50px;",
-                "placeholder": "Пример: #Романтика #Драмма #Повседневность #Зомби"
+                "placeholder": "Пример: #Романтика #Драмма #Повседневность #Зомби",
             }
         ),
     )
@@ -46,9 +53,8 @@ class CreateQuestForm(forms.Form):
             attrs={
                 "class": "form-control",
             }
-        )
+        ),
     )
-
 
 
 class CreateActionForm(forms.Form):
@@ -57,7 +63,7 @@ class CreateActionForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Введте название, после сохранения, будет доступна настройка действий"
+                "placeholder": "Введте название, после сохранения, будет доступна rating",
             }
         ),
     )
@@ -74,7 +80,9 @@ class CreateActionForm(forms.Form):
         if to_location:
             self.to_location = to_location
 
+
 CHOICES = {0: "Сцена с действиями", 1: "Финальная сцена"}
+
 
 class VisibilityForm(forms.Form):
     CHOICES_V = {0: "Приватный", 1: "Публичный"}
@@ -84,8 +92,9 @@ class VisibilityForm(forms.Form):
                 "class": "form-select",
             }
         ),
-        choices=CHOICES_V
+        choices=CHOICES_V,
     )
+
 
 class CreateLocationForm(forms.Form):
 
@@ -127,8 +136,20 @@ class CreateLocationForm(forms.Form):
                 "class": "form-select",
             }
         ),
-        choices=CHOICES
+        choices=CHOICES,
     )
+
+    achievement = forms.CharField(
+        label="Достижение",
+        max_length=32,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+
     actions: [CreateActionForm()]
 
     def __init__(self, *args, **kwargs):
@@ -145,7 +166,7 @@ class CreateLocationForm(forms.Form):
 class ComplaintForm(forms.Form):
     message = forms.CharField(
         required=True,
-        widget=forms.TextInput(
+        widget=forms.Textarea(
             attrs={
                 "class": "form-control",
                 "placeholder": "Сообщение",
@@ -153,7 +174,20 @@ class ComplaintForm(forms.Form):
         ),
     )
 
+
+class RateForm(forms.Form):
+    rate = forms.IntegerField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+
+
 # РЕГИСТРАЦИЯ ЛОГИН И ПОДДЕРЖКА (ВСЁ ЧТО НА ГЛАВНОЙ СТРАНИЦЕ)
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -161,72 +195,81 @@ class LoginForm(forms.Form):
         required=True,
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control',
-                'placeholder': 'Username',
+                "class": "form-control",
+                "placeholder": "Username",
             }
-        )
+        ),
     )
     password = forms.CharField(
         max_length=20,
         required=True,
         widget=forms.PasswordInput(
             attrs={
-                'class': 'form-control',
-                'placeholder': 'Password',
+                "class": "form-control",
+                "placeholder": "Password",
             }
-        )
+        ),
     )
+
 
 class Support(forms.Form):
     email = forms.EmailField(
-        label='Электронная почта',
+        label="Электронная почта",
         max_length=65,
         widget=forms.EmailInput(
             attrs={
-                'class': 'form-control',
+                "class": "form-control",
             }
         ),
-        required=False
+        required=False,
     )
     message = forms.CharField(
-        label='Сообщение',
+        label="Сообщение",
         max_length=5000,
         widget=forms.Textarea(
             attrs={
-                'class': 'form-control',
-                'placeholder':'Подробно пишите Вашу проблему',
-                'style': 'height:60px'
+                "class": "form-control",
+                "placeholder": "Подробно пишите Вашу проблему",
+                "style": "height:60px",
             }
-        )
+        ),
     )
 
 
 class FiltersCatalog(forms.Form):
     genre = forms.ChoiceField(
-        choices=[("Приключения", "Приключения"), ("Драма", "Драма"), ("Фэнтези", "Фэнтези")], widget=forms.RadioSelect,
+        choices=[
+            ("Приключения", "Приключения"),
+            ("Драма", "Драма"),
+            ("Фэнтези", "Фэнтези"),
+        ],
+        widget=forms.RadioSelect,
         label="Жанр",
         required=False,
     )
     popular = forms.ChoiceField(
-        choices=[(1, "1-2"), (2, "3-4"), (3, "5")], widget=forms.RadioSelect,
+        choices=[(1, "1-2"), (2, "3-4"), (3, "5")],
+        widget=forms.RadioSelect,
         label="Популярность",
         required=False,
     )
     duration = forms.ChoiceField(
-        choices=[(1, "1-3"), (2, "4-6"), (3, ">= 7")], widget=forms.RadioSelect,
+        choices=[(1, "1-3"), (2, "4-6"), (3, ">= 7")],
+        widget=forms.RadioSelect,
         label="Длительность",
         required=False,
     )
     agelimit = forms.ChoiceField(
-        choices=[(1, "меньше 12"), (2, "12-16"), (3, "> 16")], widget=forms.RadioSelect,
+        choices=[(1, "меньше 12"), (2, "12-16"), (3, "> 16")],
+        widget=forms.RadioSelect,
         label="Ограничение по возрасту",
         required=False,
     )
     completed = forms.BooleanField(
-        label="Отображать пройденные",
+        label="Не отображать пройденные",
         required=False,
     )
-    favourite = forms.BooleanField(
+    favorite = forms.BooleanField(
         label="Только избранные",
         required=False,
     )
@@ -240,34 +283,32 @@ class FiltersCatalog(forms.Form):
         required=False,
     )
 
+
 class EditUserForm(forms.Form):
     username = forms.CharField(
         max_length=20,
         required=True,
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control',
-                'placeholder': 'Username',
+                "class": "form-control",
+                "placeholder": "Username",
             }
-        )
+        ),
     )
-    # image = forms.ImageField(
-    #     label="Аватарка",
-    #     required=False,
-    #     widget=forms.FileInput(
-    #         attrs={
-    #             "class": "form-control",
-    #         }
-    #     )
-    # )
+    image = forms.ImageField(
+        label="Аватарка",
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
     email = forms.EmailField(
-        label='Адрес электронной почты',
+        label="Адрес электронной почты",
         max_length=65,
         widget=forms.EmailInput(
-        attrs={
-            'class': 'form-control',
-            'placeholder': "duck@dungeons.jam"
-            }
+            attrs={"class": "form-control", "placeholder": "duck@dungeons.jam"}
         ),
     )
 
@@ -275,19 +316,97 @@ class EditUserForm(forms.Form):
 class CustomUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["password1"].widget.attrs.update({
-            "class":"form-control",
-        })
-        self.fields["password2"].widget.attrs.update({
-            "class": "form-control",
-        })
-        self.fields["username"].widget.attrs.update({
-            "class": "form-control",
-        })
-        self.fields["email"].widget.attrs.update({
-            "class": "form-control",
-        })
+        self.fields["password1"].widget.attrs.update(
+            {
+                "class": "form-control",
+            }
+        )
+        self.fields["password2"].widget.attrs.update(
+            {
+                "class": "form-control",
+            }
+        )
+        self.fields["username"].widget.attrs.update(
+            {
+                "class": "form-control",
+            }
+        )
+        self.fields["email"].widget.attrs.update(
+            {
+                "class": "form-control",
+            }
+        )
 
     class Meta:
         model = get_user_model()
         fields = ["username", "password1", "password2", "email"]
+
+
+class QuestInformation(forms.Form):
+    name = forms.CharField(
+        label="Название вашего квеста",
+        max_length=64,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Например: Ведьминское подземелье",
+                "style": "height: 3rem",
+            }
+        ),
+    )
+    description = forms.CharField(
+        label="Описание вашего квеста",
+        max_length=2000,
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                "class": "form-control",
+                "style": "width:fill; height: 70px;",
+                "placeholder": "Например: В этом подземелье тебе придётся разгадать загадки и головоломки, которые "
+                "подготовил для тебя шабаш старых ведьм.",
+            }
+        ),
+    )
+    tag = forms.CharField(
+        label="Жанры, теги и ключевые слова",
+        max_length=100,
+        widget=forms.Textarea(
+            attrs={
+                "class": "form-control",
+                "style": "width:fill; height: 50px;",
+                "placeholder": "Пример: #Романтика #Драмма #Повседневность #Зомби",
+            }
+        ),
+    )
+    image = forms.ImageField(
+        label="Обложка квеста:",
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+    )
+    agelimit = forms.ChoiceField(
+        choices=[(1, "меньше 12"), (2, "12-16"), (3, "> 16")],
+        widget=forms.RadioSelect,
+        label="Ограничение по возрасту",
+        required=True,
+    )
+    CHOICES_V = {0: "Приватный", 1: "Публичный"}
+    visibility = forms.ChoiceField(
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+        choices=CHOICES_V,
+    )
+
+    def __init__(self, *args, **kwargs):
+        id = kwargs.pop("id", None)
+        super(QuestInformation, self).__init__(*args, **kwargs)
+
+        if id:
+            self.id = id

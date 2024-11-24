@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 import os
 
 from aiogram import Bot, Dispatcher
-from aiogram.enums import ParseMode
 
 from routers import callbacks, auth, commands
+from telegram.api.request import RequestApi
 from telegram.storage import TelegramStorage
 
 
@@ -21,9 +21,8 @@ async def main():
 
     load_dotenv()
     credentials = {'username': os.environ.get("API_USERNAME"), 'password': os.environ.get("API_PASSWORD")}
-    async with aiohttp.ClientSession() as session:
-        async with session.post('http://127.0.0.1:8000/api/auth', data=credentials) as response:
-            token = await response.json()
+    token = RequestApi("/auth", method='post', data=credentials)
+    token = await token.get_message()
 
     TelegramStorage.api_auth = {"Authorization": f"Token {token['token']}"}
 
@@ -34,6 +33,10 @@ async def main():
     bot = Bot(TOKEN)
 
     os.environ.pop('BOT_TOKEN', None)
+
+    tags = RequestApi("/tag/base")
+    tags = await tags.get_message()
+    TelegramStorage.base_tags = tags
 
     dp = Dispatcher()
     dp.include_routers(callbacks.router, auth.router, commands.router)

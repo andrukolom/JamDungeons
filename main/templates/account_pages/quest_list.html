@@ -1,4 +1,4 @@
-{% if created_quests != 0 %}
+{% if favorites %}
     {% for favorite in favorites %}
         <div class="row">
             <div class="col-2" style="margin: 15px;">
@@ -25,7 +25,7 @@
                             <p class="badge text rounded-3 bg-secondary" style="width: auto; font-size: 16px; margin-right:5px;">{{ item }}</p>
                         {% endfor %}
                     </div>
-                <span class="text-dark">Автор: автор</span>
+                <span class="text-dark">Автор: {{ story.author }}</span>
                 <div class="row">
                     <span class="text-dark">Краткое описание</span>
                 </div>
@@ -33,6 +33,11 @@
             <div class="col col-auto" style="margin-top: 30px;">
                 <div class="vstack gap-3">
                     <a href="{% url 'passage_story' location_id=favorite.start_location%}" class="p-2 btn btn-success text-white" type="button" style="">Пройти квест</a>
+                </div>
+            </div>
+            <div class="col col-auto" style="margin-top: 30px;">
+                <div class="vstack gap-3">
+                    <a href="{% url 'remove_favorite' quest_id=favorite.id page=0%}" class="p-2 btn btn-danger text-white" type="button" style="">Удалить из избранного</a>
                 </div>
             </div>
             <hr>

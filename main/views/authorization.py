@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from main.forms import CustomUserCreationForm
 from main.views.views import get_base_context
 
+
 def login_page(request):
     if request.method == "POST":
         print(request.POST)
@@ -31,20 +32,20 @@ def registration_page(request):
 
             username = reg_form.cleaned_data.get("username")
             password = reg_form.cleaned_data.get("password1")
-            email=reg_form.cleaned_data.get("email")
+            email = reg_form.cleaned_data.get("email")
 
             user = authenticate(username=username, password=password, email=email)
             login(request, user)
 
             return redirect("index")
-        else:
-            context["reg_form"] = CustomUserCreationForm()
-            data_errors = reg_form.errors.get_json_data()
-            for _item in data_errors['password2']:
-                messages.add_message(request, messages.ERROR, _item['message'])
-            return render(request, "registration/registration.html", context)
-    else:
-        reg_form = CustomUserCreationForm()
+
+        context["reg_form"] = CustomUserCreationForm()
+        data_errors = reg_form.errors.get_json_data()
+        for _item in data_errors["password2"]:
+            messages.add_message(request, messages.ERROR, _item["message"])
+        return render(request, "registration/registration.html", context)
+
+    reg_form = CustomUserCreationForm()
 
     context["reg_form"] = reg_form
     return render(request, "registration/registration.html", context)

@@ -27,21 +27,21 @@
                 </div>
                 <div class="carousel-inner">
                   <div class="carousel-item active">
-                    <img src="static/images/1.jpg" class="rounded-5 d-block" alt="..." style="height: 100%; width: 100%;">
+                      <a href="{% url 'passage_story' location_id=main_quest1.start_location %}"><img src="media/{{main_quest1.image}}" class="rounded-5 d-block" alt="..." style="height: 100%; width: 100%;"></a>
                     <div class="carousel-caption d-none d-md-block">
-                      <h5 class="badge text rounded-3 bg-dark" style="font-size: 20px;">Сердце дьявола</h5>
+                      <h5 class="badge text rounded-3 bg-dark" style="font-size: 20px;">{{main_quest1.title}}</h5>
                     </div>
                   </div>
                   <div class="carousel-item">
-                    <img src="static/images/2.jpg" class="rounded-5 d-block" alt="..." style="height: 100%; width: 100%;">
+                      <a href="{% url 'passage_story' location_id=main_quest2.start_location %}"><img src="media/{{main_quest2.image}}" class="rounded-5 d-block" alt="..." style="height: 100%; width: 100%;"></a>
                     <div class="carousel-caption d-none d-md-block">
-                      <h5 class="badge text rounded-3 bg-dark" style="font-size: 20px;">Подземелье "Лёгкая удача"</h5>
+                      <h5 class="badge text rounded-3 bg-dark" style="font-size: 20px;">{{main_quest2.title}}</h5>
                     </div>
                   </div>
                   <div class="carousel-item">
-                    <img src="static/images/3.jpg" class="rounded-5 d-block" style="height: 100%; width: 100%;">
+                      <a href="{% url 'passage_story' location_id=main_quest3.start_location %}"><img src="media/{{main_quest3.image}}" class="rounded-5 d-block" style="height: 100%; width: 100%;"></a>
                     <div class="carousel-caption d-none d-md-block">
-                      <h5 class="badge text rounded-3 bg-dark" style="font-size: 20px;">Подземелье "Лёгкая удача"</h5>
+                      <h5 class="badge text rounded-3 bg-dark" style="font-size: 20px;">{{main_quest3.title}}</h5>
                     </div>
                   </div>
                 </div>
@@ -59,10 +59,13 @@
 </div>
 
 <div class="container">
-    <h1 id="catalog">Тут будут все квесты</h1>
-    <div id="carouselExampleControls" class="position-relative carousel carousel-dark slide" data-bs-ride="false">
+    <h1 id="catalog">Подборка квестов:</h1>
+
+
+    <h3 style="margin-top:100px">Хорроры</h3>
+    <div id="carouselExampleControls1" class="position-relative carousel carousel-dark slide" data-bs-ride="false">
         <div class="carousel-inner" style="padding-left: 2.5rem; padding-right: 2.5rem;">
-            {% for stories in first_carousel %}
+            {% for stories in first_genre %}
                 <div class="carousel-item {{ stories.0.status }}">
                     <div class="cards-wrap d-flex justify-content-evenly">
                         {% for story_item in stories %}
@@ -74,12 +77,21 @@
                                         <img src="media/{{story_item.image}}" class="ratio ratio-3x4 rounded-3" style="height: 20rem;  object-fit: cover;">
                                     {% endif %}
                                 </a>
-                                <button type="button" class="btn btn-info position-absolute top-0 end-0 text-white" style="margin:20px; width: auto; height: auto;" onclick="add_favorite({{story_item.id}})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
-                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"></path>
-                                        <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"></path>
-                                    </svg>
-                                </button>
+                                {% if story_item.is_favorite %}
+                                    <a type="button" class="btn btn-danger position-absolute top-0 end-0 text-white" style="margin:20px; width: auto; height: auto;" href="{%url 'remove_favorite' quest_id=story_item.id page=1%}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"></path>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"></path>
+                                        </svg>
+                                    </a>
+                                {%else%}
+                                    <a type="button" class="btn btn-info position-absolute top-0 end-0 text-white" style="margin:20px; width: auto; height: auto;" href="{%url 'add_favorite' quest_id=story_item.id%}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"></path>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"></path>
+                                        </svg>
+                                    </a>
+                                {%endif%}
                                 <span class="align-middle text-center" style="margin-top:10px; font-size: 18px;">{{ story_item.title }}</span>
                             </div>
                         {% endfor %}
@@ -87,35 +99,110 @@
                 </div>
             {% endfor %}
         </div>
-        <button class="top-50 end-0 translate-middle-y align-middle carousel-control-prev rounded-circle" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev" style="width: 5rem; height:5rem; background-color: rgba(255,255,255,0.8)">
+        <button class="top-50 end-0 translate-middle-y align-middle carousel-control-prev rounded-circle" type="button" data-bs-target="#carouselExampleControls1" data-bs-slide="prev" style="width: 5rem; height:5rem; background-color: rgba(255,255,255,0.8)">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="top-50 end-0 translate-middle-y align-middle carousel-control-next rounded-circle" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next" style="width: 5rem; height:5rem; background-color: rgba(255,255,255,0.8)">
+        <button class="top-50 end-0 translate-middle-y align-middle carousel-control-next rounded-circle" type="button" data-bs-target="#carouselExampleControls1" data-bs-slide="next" style="width: 5rem; height:5rem; background-color: rgba(255,255,255,0.8)">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden rounded-4 bg-white">Next</span>
+        </button>
+    </div>
+
+    <h3 style="margin-top:100px">Фантастика</h3>
+    <div id="carouselExampleControls2" class="position-relative carousel carousel-dark slide" data-bs-ride="false">
+        <div class="carousel-inner" style="padding-left: 2.5rem; padding-right: 2.5rem;">
+            {% for stories in second_genre %}
+                <div class="carousel-item {{ stories.0.status }}">
+                    <div class="cards-wrap d-flex justify-content-evenly">
+                        {% for story_item in stories %}
+                            <div  class="card rounded-4" style="width: 16rem; padding:10px; margin-right: 20px;">
+                                <a href="{% url 'passage_story' location_id=story_item.start_location %}">
+                                    {% if story_item.image == "" %}
+                                        <img src="static/images/no_image.jpeg" class="ratio ratio-3x4 rounded-3" style="height: 20rem;  object-fit: cover;">
+                                    {% else %}
+                                        <img src="media/{{story_item.image}}" class="ratio ratio-3x4 rounded-3" style="height: 20rem;  object-fit: cover;">
+                                    {% endif %}
+                                </a>
+                                {% if story_item.is_favorite %}
+                                    <a type="button" class="btn btn-danger position-absolute top-0 end-0 text-white" style="margin:20px; width: auto; height: auto;" href="{%url 'remove_favorite' quest_id=story_item.id page=1%}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"></path>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"></path>
+                                        </svg>
+                                    </a>
+                                {%else%}
+                                    <a type="button" class="btn btn-info position-absolute top-0 end-0 text-white" style="margin:20px; width: auto; height: auto;" href="{%url 'add_favorite' quest_id=story_item.id%}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"></path>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"></path>
+                                        </svg>
+                                    </a>
+                                {%endif%}
+                                <span class="align-middle text-center" style="margin-top:10px; font-size: 18px;">{{ story_item.title }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="top-50 end-0 translate-middle-y align-middle carousel-control-prev rounded-circle" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="prev" style="width: 5rem; height:5rem; background-color: rgba(255,255,255,0.8)">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="top-50 end-0 translate-middle-y align-middle carousel-control-next rounded-circle" type="button" data-bs-target="#carouselExampleControls2" data-bs-slide="next" style="width: 5rem; height:5rem; background-color: rgba(255,255,255,0.8)">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden rounded-4 bg-white">Next</span>
+        </button>
+    </div>
+
+    <h3 style="margin-top:100px">Фентези</h3>
+    <div id="carouselExampleControls3" class="position-relative carousel carousel-dark slide" data-bs-ride="false">
+        <div class="carousel-inner" style="padding-left: 2.5rem; padding-right: 2.5rem;">
+            {% for stories in third_genre %}
+                <div class="carousel-item {{ stories.0.status }}">
+                    <div class="cards-wrap d-flex justify-content-evenly">
+                        {% for story_item in stories %}
+                            <div  class="card rounded-4" style="width: 16rem; padding:10px; margin-right: 20px;">
+                                <a href="{% url 'passage_story' location_id=story_item.start_location %}">
+                                    {% if story_item.image == "" %}
+                                        <img src="static/images/no_image.jpeg" class="ratio ratio-3x4 rounded-3" style="height: 20rem;  object-fit: cover;">
+                                    {% else %}
+                                        <img src="media/{{story_item.image}}" class="ratio ratio-3x4 rounded-3" style="height: 20rem;  object-fit: cover;">
+                                    {% endif %}
+                                </a>
+                                {% if story_item.is_favorite %}
+                                    <a type="button" class="btn btn-danger position-absolute top-0 end-0 text-white" style="margin:20px; width: auto; height: auto;" href="{%url 'remove_favorite' quest_id=story_item.id page=1%}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"></path>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"></path>
+                                        </svg>
+                                    </a>
+                                {%else%}
+                                    <a type="button" class="btn btn-info position-absolute top-0 end-0 text-white" style="margin:20px; width: auto; height: auto;" href="{%url 'add_favorite' quest_id=story_item.id%}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-plus" viewBox="0 0 16 16">
+                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"></path>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"></path>
+                                        </svg>
+                                    </a>
+                                {%endif%}
+                                <span class="align-middle text-center" style="margin-top:10px; font-size: 18px;">{{ story_item.title }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="top-50 end-0 translate-middle-y align-middle carousel-control-prev rounded-circle" type="button" data-bs-target="#carouselExampleControls3" data-bs-slide="prev" style="width: 5rem; height:5rem; background-color: rgba(255,255,255,0.8)">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="top-50 end-0 translate-middle-y align-middle carousel-control-next rounded-circle" type="button" data-bs-target="#carouselExampleControls3" data-bs-slide="next" style="width: 5rem; height:5rem; background-color: rgba(255,255,255,0.8)">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden rounded-4 bg-white">Next</span>
         </button>
     </div>
 
 </div>
-<!--<div>-->
-<!--    {% for stories in first_carousel %}-->
-<!--        {% for story_item in stories %}-->
-<!--                <h3>{{ story_item.title }}</h3>-->
-<!--                {% if story_item.image == None %}-->
-<!--                    <img src="media/{{story_item.image}}" style="max-height:300px">-->
-<!--                {% else %}-->
-<!--                    <img src="static/images/no_image.jpeg" style="max-height:300px">-->
-<!--                {% endif %}-->
-<!--                <br>-->
-<!--                <a href="{% url 'passage_story' location_id=story_item.start_location %}" class="btn btn-success btn-block">Пройти квест</a>-->
-<!--                {% if request.user.is_authenticated and story_item.author.username == request.user.username%}-->
-<!--                    <a href="{% url 'create_location' location_id=story_item.start_location%}" class="btn btn-success btn-block">Редактировать историю</a>-->
-<!--                {% endif %}-->
-<!--        {% endfor %}-->
-<!--    <hr>-->
-<!--    {% endfor %}-->
-<!--</div>-->
-
 {% endblock %}
 

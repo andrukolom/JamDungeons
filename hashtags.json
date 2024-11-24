@@ -1,74 +1,75 @@
 [
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Хоррор"
+      "tag": "хоррор"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Фантастика"
+      "tag": "фантастика"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Фэнтези"
+      "tag": "фентези"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Детектив"
+      "tag": "детектив"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Приключения"
+      "tag": "приключения"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Исторический"
+      "tag": "исторический"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Научно-популярный"
+      "tag": "научно-популярный"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Романтика"
+      "tag": "романтика"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Комедия"
+      "tag": "комедия"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Драма"
+      "tag": "драма"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Триллер"
+      "tag": "триллер",
+      "base_tag": "True"
     }
   },
   {
-    "model": "main.hashtag",
+    "model": "main.usual_tags",
     "fields": {
-      "tag": "#Мистика"
+      "tag": "мистика"
     }
   }
 ]

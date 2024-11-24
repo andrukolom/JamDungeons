@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^5.3.3"
+    "bootstrap": "^5.3.3",
+    "cytoscape": "^3.29.2"
   }
 }

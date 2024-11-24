@@ -4,13 +4,24 @@
 {% endblock %}
 
 {% block content %}
-    <div>
-        {% for complain in complaints %}
-        <p style="margin-top: 50px">Жалоба{% if complain.username %} от {{ complain.username }}{% endif %}</p>
-        <p>quest_id - {{ complain.quest_id }}</p>
-        <p>location_id - {{ complain.location_id }}</p>
-        <p>Сообщение - {{ complain.message }}</p>
-        <a href="/delete_complaint/{{ complain.id }}">Перейти в квест</a>
-        {% endfor %}
+<div class="container" style="margin-top: 20px;">
+    <span class="logo" style="font-size: 26px; ">Жалобы:</span>
+    {% for complain in complaints %}
+    <div class="card" style="margin-top: 10px;">
+        <div class="card-header">
+            <p style="margin-top: 50px">Жалоба{% if complain.username %} от {{ complain.username }}{% endif %}</p>
+        </div>
+        <div class="card-body" style="min-height: 60px; min-width: 60px;">
+            <label class="form-label">Локация:</label>
+            <span class="form-control" style="margin-bottom: 20px;">{{ complain.location_id }}</span>
+            <label class="form-label">Квест:</label>
+            <span class="form-control" style="margin-bottom: 20px;">{{ complain.quest_id }}</span>
+            <label class="form-label">Жалоба:</label>
+            <span class="form-control">{{ complain.message }}</span>
+            <a class="p-2 btn btn-info" href="{%url 'character' quest_id=complain.quest_id%}" style="margin-top:10px">Перейти к квесту</a>
+        </div>
+        <a class="p-2 btn btn-info" href="{%url 'delete_complaint' complaint_id=complain.id%}">Закрыть жалобу</a>
     </div>
+    {% endfor %}
+</div>
 {% endblock %}

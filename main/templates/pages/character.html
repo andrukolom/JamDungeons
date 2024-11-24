@@ -1,35 +1,96 @@
 {% extends 'base.html' %}
 
-{% block extra_css %}
-<style>
-    textarea {
-        font-family:monospace;
-    }
-</style>
-{% endblock %}
-
-{% block pagename %}
-<div class="row">
-    <div class="col text-center">
-        <h2>Выбрать персонажа</h2><hr>
-    </div>
-</div>
-{% endblock %}
-
 {% block content %}
 <div class="container">
-    <form action="" method="post">
-        {% csrf_token %}
-        {% for character in characters %}
-            <div class="container text-right">
-                 <button class="btn btn-primary" type="submit" style="width:500px; height: 40px;" name="character" value="{{ character.id }}">{{ character.name }}</button>
-            </div>
-        {% endfor %}
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Имя" name="character_name">
-          <button class="btn btn-primary" type="submit" style="width:500px; height: 40px;" name="character" value="0">Создать нового</button>
+    <div class="row">
+        <div class="col-auto" style="margin: 15px;">
+            {% if story.image == ""%}
+                <img src="/static/images/no_image.jpeg" class="ratio ratio-3x4 rounded-3" style="width: 18rem; height: 24rem; object-fit: cover;">
+            {% else %}
+                <img src="/media/{{story.image}}" class="ratio ratio-3x4 rounded-3" style="width: 12rem; height: 16rem; object-fit: cover;">
+            {% endif %}
         </div>
-    </form>
+        <div class="col" style="width: 100%; margin-top: 30px;">
+            <div class="row">
+                <div class="col">
+                    <span class="align-bottom h1">{{story.title}}</span>
+                </div>
+            </div>
+            <div class="row" style="padding: 12px;">
+                {% for item in story.tag %}
+                    <p class="badge text rounded-3 bg-secondary" style="width: auto; font-size: 16px; margin-right:5px; margin-bottom: 0px;">{{ item }}</p>
+                {% endfor %}
+            </div>
+            <span class="text-dark" style="font-size: 22px;">Автор: {{ story.author }}</span>
+            <div class="row">
+                <span class="text-dark" style="font-size: 22px;">{{ story.description }}</span>
+            </div>
+        </div>
+        <div class="col col-2 text-center" style="margin-top: 30px; margin-right:24px;">
+            <div class="col col-auto mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" color="#FF9100" class="align-middle bi bi-star-fill" viewBox="0 0 16 16">
+                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
+                </svg>
+                <span class="align-middle text-primary" style="font-size:40px;">{{story.rating}}</span>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary text-white rounded-4" style="width: 100%;" type="button">Оценить</button>
+            </div>
+            <div class="row" style="margin-top: 30px;">
+                <div class="col"></div>
+                <div class="col-auto">
+                    <div class="card">
+                        <div class="card-header">
+                            ID квеста
+                        </div>
+                        <div class="card-body text-center" style="font-size: 30px;">
+                            #{{ quest_id }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col"></div>
+        </div>
+    </div>
+
+    <div class="container mb-4">
+        <span class="logo" style="font-size: 35px; ">Твои прохождения:</span>
+    </div>
+
+    <div class="container" style="padding-left: 25px;">
+        <form action="" method="post">
+            {% csrf_token %}
+            {% for character in characters %}
+                <div class="row">
+                    <div class="col-auto" style="width: 2rem;">
+                        <span class="align-top text-dark" style="font-size: 24px;">{{ character.index }}.</span>
+                    </div>
+                    <div class="col">
+                        <span class="align-top text-dark" style="font-size: 24px;">Имя персонажа:</span>
+                        <span class="align-top" style="font-size: 24px;">{{ character.data.name }}</span>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-success text-white rounded-4" style="width: 100%;" type="submit" name="character" value="{{ character.data.id }}">Продолжить прохождение</button>
+                    </div>
+                <hr style="margin-top: 16px;">
+                </div>
+            {% endfor %}
+            <div class="row">
+                    <div class="col-auto" style="width: 2rem;">
+                        <label for="input" class="col-form-label text-dark" style="font-size: 24px;">0.</label>
+                    </div>
+                    <div class="col-auto">
+                        <label for="input" class="col-form-label text-dark" style="font-size: 24px;">Имя персонажа:</label>
+                    </div>
+                    <div class="col">
+                        <input id="input" type="text" class="form-control" placeholder="Например: Вайолент" name="character_name" style="font-size: 20px;">
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-primary text-white rounded-4" style="height: 85%; width: 100%;" type="submit" name="character" value="0">Начать новое приключение</button>
+                    </div>
+                <hr style="margin-top: 16px;">
+            </div>
+        </form>
+    </div>
 </div>
 
 {% endblock %}

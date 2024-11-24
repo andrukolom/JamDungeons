@@ -1,22 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
+
+
 <div class="container">
     <span class="logo" style="font-size: 50px; ">Профиль</span>
     <div class="row" style="margin-top: 20px;">
         <div class="col col-auto">
-            <div class="rounded-circle bg-dark" style="height: 15rem; width: 15rem;"></div>
+            <div class="rounded-circle bg-dark" style="height: 15rem; width: 15rem;">
+                {%if user.image%}<img src="/media/{{user.image}}" class="rounded-circle" style="height: 15rem; width: 15rem;">{%endif%}
+            </div>
         </div>
         <div class="col">
             <div class="container" style="padding-top: 30px;">
                 <div class="row">
                     <div class="col" >
-                        <p class="form-control" style="height: 100%; font-size: 2rem;">{{ user.username }}</p>
+                        <p class="form-control" style="font-size: 2rem;">{{ user.username }}</p>
                     </div>
                     <div class="col col-auto">
-                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-white bi-pencil-square" style="font-size: 2rem;"></button>
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-outline-dark" style="font-size: 2rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                              <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
-                <div class="row align-items-center" style="margin-top: 20px;">
+
+                <div class="row align-items-center">
                     <div class="col col-auto">
                         <span style="font-size: 25px;">Уровень {{level}}</span>
                     </div>
@@ -29,36 +39,51 @@
                         <span class="text-light" style="font-size: 25px;">{{experience}}/1000 - {{percent}}%</span>
                     </div>
                 </div>
+
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-auto">
+                        <label class="col-form-label" for="telegram_id">Твой Телеграмм токен:</label>
+                    </div>
+                    <div class="col-7">
+                        <div class="input-group">
+                            <input type="password" class="form-control" value="{{ token.key }}" name="password" id="telegram_id" readonly>
+                            <a href="{% url 'account' %}" class="btn btn-outline-secondary bi-arrow-repeat"></a>
+                            <button class="btn btn-outline-secondary bi bi-eye" id="togglePassword"></button>
+                        </div>
+                    </div>
+                    <span class="text-muted">Токен устареет {{ token.date }}</span>
+                    <span class="text-muted">Если ваш токен устарел, нажмите на кнопку "обновить" или перезагрузите страницу.</span>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row" style="margin-top: 60px;">
-        <ul class="nav nav-tabs">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#favourite" type="button" role="tab" aria-controls="favourite" aria-selected="true">ИЗБРАННОЕ</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="true">МОИ ПРОХОЖДЕНИЯ</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#created" type="button" role="tab" aria-controls="created" aria-selected="true">СОЗДАННЫЕ КВЕСТЫ</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#achievements" type="button" role="tab" aria-controls="achievements" aria-selected="true">ДОСТИЖЕНИЯ</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab" aria-controls="comments" aria-selected="true">ЖАЛОБЫ И КОММЕНТАРИИ</a>
-            </li>
-        </ul>
-    </div>
+        <div class="row" style="margin-top: 60px;">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link {% if quest_info_form %}  {% else %}active {% endif %}" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#favourite" type="button" role="tab" aria-controls="favourite" aria-selected="true">ИЗБРАННОЕ</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="true">МОИ ПРОХОЖДЕНИЯ</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link {% if quest_info_form %}active{% endif %}" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#created" type="button" role="tab" aria-controls="created" aria-selected="true">СОЗДАННЫЕ КВЕСТЫ</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#achievements" type="button" role="tab" aria-controls="achievements" aria-selected="true">ДОСТИЖЕНИЯ</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" style="font-size: 20px;" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab" aria-controls="comments" aria-selected="true">ЖАЛОБЫ И КОММЕНТАРИИ</a>
+                </li>
+            </ul>
+        </div>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="favourite" role="tabpanel" aria-labelledby="favourite-tab">{% include 'account_pages/quest_list.html' %}</div>
+        <div class="tab-pane fade {% if quest_info_form %}  {% else %} show active {% endif %}" id="favourite" role="tabpanel" aria-labelledby="favourite-tab">{% include 'account_pages/quest_list.html' %}</div>
         <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">{% include 'account_pages/adventures.html' %}</div>
-        <div class="tab-pane fade" id="created" role="tabpanel" aria-labelledby="created-tab">{% include 'account_pages/created_quests.html' %}</div>
+        <div class="tab-pane fade {% if quest_info_form %}show active{% endif %}" id="created" role="tabpanel" aria-labelledby="created-tab">{% include 'account_pages/created_quests.html' %}</div>
         <div class="tab-pane fade" id="achievements" role="tabpanel" aria-labelledby="achievements-tab">{% include 'account_pages/achievements.html' %}</div>
         <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">{% include 'account_pages/comments.html' %}</div>
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="False">
         <div class="modal-dialog">
             <div class="modal-content">
                     <div class="modal-header">
@@ -66,7 +91,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="post" class="container">
+                        <form method="post" class="container" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col">
@@ -76,6 +101,11 @@
                             <div class="row">
                                 <div class="col">
                                     {{edit_user_form.email}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    {{edit_user_form.image}}
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-success">Подтвердить</button>
@@ -88,4 +118,22 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    const togglePassword = document
+        .querySelector('#togglePassword');
+    const password = document.querySelector('#telegram_id');
+    togglePassword.addEventListener('click', () => {
+        // Toggle the type attribute using
+        // getAttribure() method
+        const type = password
+            .getAttribute('type') === 'password' ?
+            'text' : 'password';
+        password.setAttribute('type', type);
+        // Toggle the eye and bi-eye icon
+        this.classList.toggle('bi-eye-slash');
+    });
+</script>
+
 {% endblock %}

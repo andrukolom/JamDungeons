@@ -1,1 +1,23 @@
-<p class="text-center text-muted" style="margin-top: 40px;">В РАЗРАБОТКЕ</p>
+{% load static %}
+{% if users_character %}
+    {% for achieve in achievements %}
+        <div class="row">
+            <div class="col-2" style="margin-top: 10px;">
+                <img src="{% if achieve.image %}/media/{{ achieve.image }}{% else %}{% static 'images/no_image.jpeg' %}{% endif %}" class="ratio ratio-4x3 rounded-3" style="width: 10rem; height: 10rem; object-fit: cover;">
+            </div>
+            <div class="col" style="width: 10%; margin-top: 15px; margin-left: 70px">
+                 <span class="align-bottom h2">{{ achieve.text }}</span>
+                 <div>
+                     <span class="text-dark" style="font-size: 20px;">Квест: {{ achieve.quest_name }}</span>
+
+                 </div>
+
+            </div>
+        </div>
+
+        <hr>
+
+    {% endfor %}
+{% else %}
+    <p class="text-center text-muted" style="margin-top: 40px;"> Тут пока что пусто</p>
+{% endif %}

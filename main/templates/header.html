@@ -17,7 +17,9 @@
                   <a class="nav-link active" href="{% url 'catalog' %}">КАТАЛОГ</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#">СЛУЧАЙНЫЙ КВЕСТ</a>
+                    {% if random %}
+                        <a class="nav-link active" aria-current="page" href="{% url 'character' quest_id=random %}">СЛУЧАЙНЫЙ КВЕСТ</a>
+                    {% endif %}
                 </li>
                 <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="{% url 'guide' %}">РУКОВОДСТВО</a>
@@ -25,6 +27,11 @@
                 <li class="nav-item">
                   <button class="nav-link active" data-bs-toggle="modal" data-bs-target="#helpModal">ПОДДЕРЖКА</button>
                 </li>
+                {% if user.is_staff %}
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="{% url 'view_complaint' %}">ЖАЛОБЫ</a>
+                </li>
+                {% endif %}
                 {% if request.user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'account' %}">{{ request.user }}</a>

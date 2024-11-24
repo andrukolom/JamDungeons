@@ -1,23 +1,30 @@
 {% extends 'base.html' %}
-
-<style>
-
-</style>
 {% block content %}
-    <div class="row">
-        <div class="col text-center page-header">
 
-                <h1><p class="passage" style="background-color: orange; color: white; width: 45%; border-radius: 10px; margin-left: -20px; height: 5rem; font-size: 60px; padding-right: 425px">{{story_name}}</p></h1>
-
+<div class="container">
+    <div class="container" style="width: 90%">
+        <p class="text-muted" style="margin: 0px;">Квест - {{quest.name}}</p>
+        <div class="row">
+            <div class="col">
+                <p class="logo" style="font-size: 40px;">{{ story.name }}</p>
+            </div>
+            <div class="col-auto" >
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#complaint" style="margin-top: 10px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                        <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"></path>
+                        <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"></path>
+                    </svg>
+                    Жалоба
+                </button>
+            </div>
         </div>
-        <div class="story-text unbounded" style="margin-top: 10px">
-            <h3><p style="background-color: #F5F5F5; color: black; height: 17rem; width: 80%; text-align: center; margin: 0 auto;  padding-top: 15px; font-size: 20px; border-radius: 11px; border-width: 3px; border-color: #9E9E9E; border-style: solid;">{{ story.text }}</p></h3>
+        <div class="row">
+            <p class="form-control text-" style="font-size: 22px; min-height: auto;">{{ location.text }}</p>
         </div>
     </div>
 
     <br>
     {% if not the_end%}
-
         {% for action in actions %}
             <div class="passage" style="margin-left: 150px; margin-right: 150px">
                 <b>
@@ -30,22 +37,79 @@
                 </b>
             </div>
             <br>
-
         {% endfor %}
     {% else %}
-        <div class="row">
-                <h2 style="margin-left: 850px">Финал!</h2>
-                <svg style="margin-top: -45px; margin-left:35px" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-feather" viewBox="0 0 16 16">
-                  <path d="M15.807.531c-.174-.177-.41-.289-.64-.363a3.8 3.8 0 0 0-.833-.15c-.62-.049-1.394 0-2.252.175C10.365.545 8.264 1.415 6.315 3.1S3.147 6.824 2.557 8.523c-.294.847-.44 1.634-.429 2.268.005.316.05.62.154.88q.025.061.056.122A68 68 0 0 0 .08 15.198a.53.53 0 0 0 .157.72.504.504 0 0 0 .705-.16 68 68 0 0 1 2.158-3.26c.285.141.616.195.958.182.513-.02 1.098-.188 1.723-.49 1.25-.605 2.744-1.787 4.303-3.642l1.518-1.55a.53.53 0 0 0 0-.739l-.729-.744 1.311.209a.5.5 0 0 0 .443-.15l.663-.684c.663-.68 1.292-1.325 1.763-1.892.314-.378.585-.752.754-1.107.163-.345.278-.773.112-1.188a.5.5 0 0 0-.112-.172M3.733 11.62C5.385 9.374 7.24 7.215 9.309 5.394l1.21 1.234-1.171 1.196-.027.03c-1.5 1.789-2.891 2.867-3.977 3.393-.544.263-.99.378-1.324.39a1.3 1.3 0 0 1-.287-.018Zm6.769-7.22c1.31-1.028 2.7-1.914 4.172-2.6a7 7 0 0 1-.4.523c-.442.533-1.028 1.134-1.681 1.804l-.51.524zm3.346-3.357C9.594 3.147 6.045 6.8 3.149 10.678c.007-.464.121-1.086.37-1.806.533-1.535 1.65-3.415 3.455-4.976 1.807-1.561 3.746-2.36 5.31-2.68a8 8 0 0 1 1.564-.173"/>
-                </svg>
+    <div class="container text-center">
+        <h2>Конец!</h2>
+        <div class="d-grid gap-2 col-4 mx-auto">
+            <button class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#rate"><strong>Оценить квест</strong></button>
+            <a href="{% url 'character' quest_id=quest_id %}" class="btn btn-outline-dark" type="button">Вернуться на страницу квеста</a>
         </div>
+    </div>
+
     {% endif %}
 
         {% if is_staff %}
-        {% if is_ban %}
-        <a href="/unban/{{ quest_id }}" class="btn btn-warning btn-block">Разбанить</a>
-        {% else %}
-        <a href="/ban/{{ quest_id }}" class="btn btn-warning btn-block">Забанить</a>
+            {% if is_ban %}
+                <a href="/unban/{{ quest_id }}" class="btn btn-warning btn-block">Разбанить</a>
+            {% else %}
+                <a href="/ban/{{ quest_id }}" class="btn btn-warning btn-block">Забанить</a>
+            {% endif %}
         {% endif %}
-        {% endif %}
+        <div class="modal fade" id="complaint" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Пожаловаться на квест</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{% url 'make_complaint' quest_id=quest.id location_id=location.id%}" method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <p> Жалоба: {{ complaintform.message }}</p>
+                            <div style="margin-top: 10px;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary text-white">Отправть сообщение</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="rate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Оценить квест</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="model-body">
+                        <form class="text-center " method="post" action="" style="width: 80%; margin-bottom: 20px;">
+                            {% csrf_token %}
+                            <div class="rating-area">
+                                  <input type="radio" id="star-5" name="rate" value="5">
+                                  <label for="star-5" title="Оценка «5»"></label>
+
+                                  <input type="radio" id="star-4" name="rate" value="4">
+                                  <label for="star-4" title="Оценка «4»"></label>
+
+                                  <input type="radio" id="star-3" name="rate" value="3">
+                                  <label for="star-3" title="Оценка «3»"></label>
+
+                                  <input type="radio" id="star-2" name="rate" value="2">
+                                  <label for="star-2" title="Оценка «2»"></label>
+
+                                  <input type="radio" id="star-1" name="rate" value="1">
+                                  <label for="star-1" title="Оценка «1»"></label>
+                            </div>
+                            <button class="btn btn-outline-success" type="submit" style="width: 100%">Сохранить оценку</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
 {% endblock %}

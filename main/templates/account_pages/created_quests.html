@@ -21,8 +21,8 @@
                     </div>
                 </div>
                     <div class="row" style="padding: 12px;">
-                        {% for item in created.tag %}
-                            <p class="badge text rounded-3 bg-secondary" style="width: auto; font-size: 16px; margin-right:5px;">{{ item }}</p>
+                        {% for tag in created.tag %}
+                            <p class="badge text rounded-3 bg-secondary" style="width: auto; font-size: 16px; margin-right:5px;">{{ tag }}</p>
                         {% endfor %}
                     </div>
                 <span class="text-dark">Автор: автор</span>
@@ -30,16 +30,10 @@
                     <span class="text-dark">Краткое описание</span>
                 </div>
             </div>
-            <div class="col col-3" style="margin-top: 30px;">
-                <div class="container" style="width: 70%">
-                    <span>Видимость квеста:</span>
-                    {{ visibility_form.visibility }}
-                </div>
-            </div>
             <div class="col col-auto" style="margin-top: 30px;">
                 <div class="vstack gap-3">
                     <a href="{% url 'passage_story' location_id=created.start_location%}" class="p-2 btn btn-success text-white" type="button" style="">Пройти квест</a>
-                    <button href="{% url 'passage_story' location_id=created.start_location%}" class="p-2 btn btn-warning text-white" data-bs-toggle="modal" data-bs-target="#helpModal">Изменить информацию</button>
+                    <a href="{% url 'account' quest_id=created.id%}" class="p-2 btn btn-warning text-white">Изменить информацию</a>
                     <a href="{% url 'create_location' location_id=created.start_location%}" class="p-2 btn btn-warning text-white" type="button" style="">Редактировать сцены</a>
                 </div>
             </div>
@@ -51,6 +45,30 @@
 {% endif %}
 
 
-<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    {% include 'support.html' %}
-</div>
+    {%if quest_info_form%}
+        <div class="modal fade show" id="complaint" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" style="display: block;" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Изменить информацию квеста</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/change_quest_info/{{quest_info_form.id}}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <div style="margin-bottom:15px;">{{ quest_info_form.name.label }}: {{ quest_info_form.name }}</div>
+                            <div style="margin-bottom:15px;">{{ quest_info_form.description.label }}: {{ quest_info_form.description }}</div>
+                            <div style="margin-bottom:15px;">{{ quest_info_form.tag.label }}: {{ quest_info_form.tag }}</div>
+                            <div style="margin-bottom:15px;">{{ quest_info_form.image.label }}: {{ quest_info_form.image }}</div>
+                            <div style="margin-bottom:15px;">{{ quest_info_form.agelimit.label }}: {{ quest_info_form.agelimit }}</div>
+                            <div style="margin-bottom:15px;">{{ quest_info_form.visibility.label }}: {{ quest_info_form.visibility }}</div>
+                        </div>
+                        <div class="modal-footer">
+                            <a type="button" class="btn btn-secondary text-white" href="{%url 'account'%}">Закрыть</a>
+                            <button type="submit" class="btn btn-primary text-white">Отправть сообщение</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}

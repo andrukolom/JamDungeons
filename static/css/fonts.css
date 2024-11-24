@@ -1,3 +1,9 @@
+.rubik {
+  font-family: "Rubik", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
 .unbounded {
   font-family: "Unbounded", sans-serif;
   font-optical-sizing: auto;

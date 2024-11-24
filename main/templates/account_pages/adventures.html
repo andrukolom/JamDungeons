@@ -3,7 +3,7 @@
     {% for character in users_character %}
         <div class="row">
             <div class="col-2" style="margin-top: 10px;">
-                <img src="{% if character.quest.image %}/media/{{ character.quest.image }}{% else %}{% static 'images/napoleon.jpeg' %}{% endif %}" class="ratio ratio-4x3 rounded-3" style="width: 10rem; height: 10rem; object-fit: cover;">
+                <img src="{% if character.quest.image %}/media/{{ character.quest.image }}{% else %}{% static 'images/no_image.jpeg' %}{% endif %}" class="ratio ratio-4x3 rounded-3" style="width: 10rem; height: 10rem; object-fit: cover;">
             </div>
             <div class="col" style="width: 10%; margin-top: 15px; margin-left: 70px">
                  <span class="align-bottom h2">{{ character.quest.name }}</span>
@@ -11,7 +11,8 @@
                      <span class="text-dark" style="font-size: 20px;">Автор: {{ character.quest.author }}</span>
 
                  </div>
-                 <span class="text-dark" style="font-size: 20px;">Твой персонаж: {{ character.name }}</span>
+                 <div><span class="text-dark" style="font-size: 20px;">Твой персонаж: {{ character.name }}</span></div>
+                 <div><span class="text-dark" style="font-size: 25px;">ПРОГРЕСС: {{ character.progress }} из {{ character.locations_count }} локаций</span></div>
 
             </div>
             <div class="col col-auto" style="margin: 15px; margin-top: 55px; width: 20%">

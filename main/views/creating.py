@@ -4,45 +4,49 @@ from django.http import HttpResponseNotFound
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from main.forms import CreateQuestForm, CreateLocationForm, CreateActionForm
-from main.models import Hashtag
+from main.models import Usual_tags, Tags_Connect, Achievements
 from main.models import Location, Connect_location
 from main.models import Quest
-from main.views.views import get_base_context, navigator_from_locations, navigator_to_locations
+from main.views.views import (
+    get_base_context,
+    navigator_from_locations,
+    navigator_to_locations,
+)
 from main.views.checkout_tags import Tags_checkout
+
 
 @login_required(redirect_field_name=None)
 def create_quest(request):
     """
-        Основная функция логики страницы создания квестов
+    Основная функция логики страницы создания квестов
 
-        Создает базовый контекст
+    Создает базовый контекст
 
-        Обрабатывает форму пользователя:
+    Обрабатывает форму пользователя:
 
-        Если пользователь только зашел на страницу, то
-        создает пустую форму и добавляет ее в контекст.
-        Если пользователь отправил форму и пришел POST-запрос, то
-        проверяет форму на валидность, добавляет в форму информацию и пользователе,
-        создает модель локации для базы данных и записывает в форму данные: название, описание, автор,
-        id стартовой локации, состояние, выполнен ли квест.
+    Если пользователь только зашел на страницу, то
+    создает пустую форму и добавляет ее в контекст.
+    Если пользователь отправил форму и пришел POST-запрос, то
+    проверяет форму на валидность, добавляет в форму информацию и пользователе,
+    создает модель локации для базы данных и записывает в форму данные: название, описание, автор,
+    id стартовой локации, состояние, выполнен ли квест.
 
-        Перенаправляет на функцию create_location, если форма валидная и добавляет сообщение на сайт
-        "Отлично, движемся дальше", иначе возвращает эту форму на страницу
-        и отправляет сообщение "ОЙ, где-то ошибка!"
+    Перенаправляет на функцию create_location, если форма валидная и добавляет сообщение на сайт
+    "Отлично, движемся дальше", иначе возвращает эту форму на страницу
+    и отправляет сообщение "ОЙ, где-то ошибка!"
 
-        :param request: запрос с сайта
-        :type request: :class:`django.http.HttpRequest`
-        :return: render страницы ``pages/createQuest.html`` с контекстом
-        :rtype: :class:`django.http.HttpResponse`
+    :param request: запрос с сайта
+    :type request: :class:`django.http.HttpRequest`
+    :return: render страницы ``pages/createQuest.html`` с контекстом
+    :rtype: :class:`django.http.HttpResponse`
     """
 
     context = get_base_context(request)
-    hashtags = Hashtag.objects.all()
-    context["hashtags"] = hashtags
+    hashtags = Usual_tags.objects.all()
+    context["hashtags"] = hashtags.filter(base_tag=True)
 
     if request.method == "POST":
         form = CreateQuestForm(request.POST, request.FILES)
-        print(form)
         if form.is_valid():
 
             location_obj = Location(name="", text="", count_connections=0, quest_id=0)
@@ -51,35 +55,37 @@ def create_quest(request):
             record = Quest(
                 name=form.cleaned_data["name"],
                 description=form.cleaned_data["description"],
-                tag=form.cleaned_data["tag"],
-                author=context['user'],
+                author=context["user"],
                 start_location=location_obj.id,
                 visibility=False,
-                status=False,
+                status=True,
                 image=form.cleaned_data["image"],
+                agelimit=form.cleaned_data["agelimit"],
             )
             record.save()
-
             location_obj.quest_id = record.id
             location_obj.save()
             tag_text = form.cleaned_data.get("tag")
             tags = tag_text.split()
-            print(tags)
             for tag in tags:
                 if tag.startswith("#"):
-                    tag = tag[0:]
+                    tag = tag[1:]
+                tag_obj, created = Usual_tags.objects.get_or_create(tag=tag)
+                Tags_Connect.objects.create(tag=tag_obj, quest=record)
+                if created:
+                    print(f"Tag {tag} was created.")
                 tags_checkout = Tags_checkout(tag)
-                if (tags_checkout.can_write_tag()):
-                    hashtag = Hashtag.objects.create(tag=tag)
-                    hashtag.save()
+                if tags_checkout.can_write_tag():
+                    tag_obj.base_tag = True
+                    tag_obj.save()
             messages.add_message(request, messages.SUCCESS, "Отлично, движемся дальше!")
             return redirect("create_location", location_id=location_obj.id)
-        else:
-            messages.add_message(request, messages.ERROR, "ОЙ, где-то ошибка!")
-            context["quest_form"] = form
-            return render(request, "create_quests_pages/create_quest.html", context)
-    else:
-        context["quest_form"] = CreateQuestForm(initial={})
+
+        messages.add_message(request, messages.ERROR, "ОЙ, где-то ошибка!")
+        context["quest_form"] = form
+        return render(request, "create_quests_pages/create_quest.html", context)
+
+    context["quest_form"] = CreateQuestForm(initial={})
     return render(request, "create_quests_pages/create_quest.html", context)
 
 
@@ -111,14 +117,22 @@ def create_location(request, location_id: int):
     context = get_base_context(request)
     if request.method == "POST":
         form = CreateActionForm(request.POST)
-
         record = Location.objects.get(id=location_id)
         record.text = form.data["history"]
-        record.count_connections = int(request.POST.get('countActions', 0))
+        record.count_connections = int(request.POST.get("countActions", 0))
         record.name = form.data["name"]
         the_end_value = form.data["final_location"]
         record.the_end = bool(int(the_end_value))
-        form_count_actions = int(request.POST.get('countActions', 0))
+        form_count_actions = int(request.POST.get("countActions", 0))
+
+        achievement = Achievements.objects.get_or_create(location=record)[0]
+        new_achievement = form.data["achievement"]
+
+        if new_achievement != "":
+            achievement.name = new_achievement
+            achievement.save()
+        else:
+            achievement.delete()
 
         if record.the_end:
             record.count_connections = 0
@@ -149,16 +163,21 @@ def create_location(request, location_id: int):
             action_record = Connect_location(from_location=record.id, to_location=0)
             action_record.save()
 
-            action_forms.append(CreateActionForm(id=action_record.connect_id, to_location=action_record.to_location))
+            action_forms.append(
+                CreateActionForm(
+                    id=action_record.connect_id, to_location=action_record.to_location
+                )
+            )
 
         context["location_form"] = CreateLocationForm(
             initial={
                 "history": form.data["history"],
                 "countActions": form_count_actions,
                 "name": form.data["name"],
+                "achievement": new_achievement,
             },
             actions=action_forms,
-            current_min_value=int(request.POST.get('countActions', 0)),
+            current_min_value=int(request.POST.get("countActions", 0)),
         )
         locations = Location.objects.filter(quest_id=record.quest_id)
         nodes = []
@@ -183,85 +202,102 @@ def create_location(request, location_id: int):
                                 "name": connect.action,
                             }
                         }
-
                     )
 
         context["nodes"] = json.dumps(nodes)
         context["edges"] = json.dumps(edges)
-        context['from_locations'] = navigator_from_locations(location_id)
-        context['alfa_locations'] = navigator_to_locations(location_id)
-        context['all_locations'] = Location.objects.filter(quest_id=record.quest_id)
+        context["from_locations"] = navigator_from_locations(location_id)
+        context["alfa_locations"] = navigator_to_locations(location_id)
+        context["all_locations"] = Location.objects.filter(quest_id=record.quest_id)
         context["location_id"] = record.id
-        context["location_form"].fields['final_location'].initial = [int(record.the_end)]
+        context["location_form"].fields["final_location"].initial = [
+            int(record.the_end)
+        ]
         context["the_end"] = record.the_end
-        if record.the_end:
-            context["location_form"].fields["countActions"].widget.attrs["disabled"] = True
-
-        return render(request, "create_quests_pages/create_location.html", context)
-    else:
-        location = Location.objects.get(id=location_id)
         quest = Quest.objects.get(id=location.quest_id)
-        if quest.author_id != context['user'].id:
-            return HttpResponseNotFound('<h1>Не трожь чужое</h1>')
-        actions = Connect_location.objects.filter(from_location=location_id)
-        locations = Location.objects.filter(quest_id=location.quest_id)
-        context['from_locations'] = navigator_from_locations(location_id)
-        context['alfa_locations'] = navigator_to_locations(location_id)
-        context['all_locations'] = locations
-        context["location_id"] = location.id
-
-        action_forms = []
-        for action in actions:
-            if action.action:
-                action_forms.append(
-                    CreateActionForm(
-                        initial={"action": action.action},
-                        id=action.connect_id,
-                        to_location=action.to_location,
-                    )
-                )
-            else:
-                action_forms.append(CreateActionForm(initial={"action": action.action}, id=action.connect_id,
-                                                     to_location=action.to_location))
-
-        context["location_form"] = CreateLocationForm(
-            initial={
-                "history": location.text,
-                "countActions": location.count_connections,
-                "name": location.name,
-            },
-            actions=action_forms,
-            current_min_value=location.count_connections,
-        )
-
-        context["location_form"].fields['final_location'].initial = [int(location.the_end)]
-        context["the_end"] = int(location.the_end)
-
-        if location.the_end:
-            context["location_form"].fields["countActions"].widget.attrs["disabled"] = True
-        else:
-            context["location_form"].fields["countActions"].widget.attrs["disabled"] = False
-        nodes = []
-        edges = []
-        for location in locations:
-            nodes.append({"data": {"id": location.id, "name": location.name}})
-            connects = Connect_location.objects.filter(from_location=location.id)
-            for connect in connects:
-                if connect.to_location:
-                    edges.append(
-                        {
-                            "data": {
-                                "source": connect.from_location,
-                                "target": connect.to_location,
-                                "name": connect.action,
-                            }
-                        }
-                    )
-
-        context["nodes"] = json.dumps(nodes)
-        context["edges"] = json.dumps(edges)
+        context["start_location"] = quest.start_location
+        if record.the_end:
+            context["location_form"].fields["countActions"].widget.attrs[
+                "disabled"
+            ] = True
 
         return render(request, "create_quests_pages/create_location.html", context)
+
+    location = Location.objects.get(id=location_id)
+    quest = Quest.objects.get(id=location.quest_id)
+    if quest.author_id != context["user"].id:
+        return HttpResponseNotFound("<h1>Не трожь чужое</h1>")
+    actions = Connect_location.objects.filter(from_location=location_id)
+    locations = Location.objects.filter(quest_id=location.quest_id)
+    context["from_locations"] = navigator_from_locations(location_id)
+    context["alfa_locations"] = navigator_to_locations(location_id)
+    context["all_locations"] = locations
+    context["location_id"] = location.id
+    context["start_location"] = quest.start_location
+    print(">>>>>", context["start_location"])
+    action_forms = []
+    for action in actions:
+        if action.action:
+            action_forms.append(
+                CreateActionForm(
+                    initial={"action": action.action},
+                    id=action.connect_id,
+                    to_location=action.to_location,
+                )
+            )
+        else:
+            action_forms.append(
+                CreateActionForm(
+                    initial={"action": action.action},
+                    id=action.connect_id,
+                    to_location=action.to_location,
+                )
+            )
+
+    context["location_form"] = CreateLocationForm(
+        initial={
+            "history": location.text,
+            "countActions": location.count_connections,
+            "name": location.name,
+        },
+        actions=action_forms,
+        current_min_value=location.count_connections,
+    )
+
+    context["location_form"].fields["final_location"].initial = [
+        int(location.the_end)
+    ]
+    context["the_end"] = int(location.the_end)
+
+    if location.the_end:
+        context["location_form"].fields["countActions"].widget.attrs[
+            "disabled"
+        ] = True
+    else:
+        context["location_form"].fields["countActions"].widget.attrs[
+            "disabled"
+        ] = False
+    nodes = []
+    edges = []
+    for location in locations:
+        nodes.append({"data": {"id": location.id, "name": location.name}})
+        connects = Connect_location.objects.filter(from_location=location.id)
+        for connect in connects:
+            if connect.to_location:
+                edges.append(
+                    {
+                        "data": {
+                            "source": connect.from_location,
+                            "target": connect.to_location,
+                            "name": connect.action,
+                        }
+                    }
+                )
+
+    context["nodes"] = json.dumps(nodes)
+    context["edges"] = json.dumps(edges)
+
+    return render(request, "create_quests_pages/create_location.html", context)
 
 
 @login_required(redirect_field_name=None)
@@ -288,6 +324,7 @@ def connect_location(request, connect_id, location_id):
 
     return redirect("create_location", location_id=connect.from_location)
 
+
 @login_required(redirect_field_name=None)
 def complete_quest(request, location_id):
     quest_id = Location.objects.get(id=location_id).quest_id
@@ -306,7 +343,6 @@ def complete_quest(request, location_id):
             finished.append(location)
 
     if unfinished or not finished:
-        print(unfinished)
         errors = str()
         for location in range(len(unfinished)):
             errors += "<<" + (unfinished[location].name) + ">> "
@@ -314,13 +350,16 @@ def complete_quest(request, location_id):
             request, messages.ERROR, f"Упс, вы забыли доделать локации: {errors}"
         )
         return redirect("create_location", location_id=location_id)
-    else:
-        messages.add_message(
-            request, messages.SUCCESS, "Поздравляем, Вы создали квест!"
-        )
-        quest.visibility = True
-        quest.save()
-        return redirect("index")
+
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        "Поздравляем, Ваш квест теперь могут пройти и другие!",
+    )
+    quest.visibility = True
+    quest.save()
+    return redirect("create_location", location_id=location_id)
+
 
 @login_required(redirect_field_name=None)
 def create_location_sketch(request, connect_id):
@@ -353,4 +392,3 @@ def create_location_sketch(request, connect_id):
     connect.save()
 
     return redirect("create_location", location_id=location_obj.id)
-

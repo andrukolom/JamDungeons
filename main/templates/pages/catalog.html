@@ -19,7 +19,6 @@
         <button class="btn btn-outline-dark" style="width: 15%;"type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasExample">Фильтры</button>
     </div>
 <!-- Сверху был поиск -->
-
     <div class="container" style="margin-top: 20px;">
         <h2>{{up_title}}</h2>
         {% for story in stories %}
@@ -28,7 +27,7 @@
                     {% if story.image == "" %}
                         <img src="/static/images/no_image.jpeg" class="ratio ratio-3x4 rounded-3" style="width: 12rem; height: 16rem; object-fit: cover;">
                     {% else %}
-                        <img src="/media/{{created.image}}" class="ratio ratio-3x4 rounded-3" style="width: 12rem; height: 16rem; object-fit: cover;">
+                        <img src="/media/{{story.image}}" class="ratio ratio-3x4 rounded-3" style="width: 12rem; height: 16rem; object-fit: cover;">
                     {% endif %}
                 </div>
                 <div class="col" style="width: 100%; margin-top: 30px;">
@@ -48,7 +47,7 @@
                                 <p class="badge text rounded-3 bg-secondary" style="width: auto; font-size: 16px; margin-right:5px;">{{ item }}</p>
                             {% endfor %}
                         </div>
-                    <span class="text-dark">Автор: автор</span>
+                    <span class="text-dark">Автор: {{ story.author }}</span>
                     <div class="row">
                         <span class="text-dark">Краткое описание</span>
                     </div>
@@ -110,10 +109,10 @@
             </div>
             <div class="row g-3 align-items-center">
                 <div class="col col-auto">
-                    <label for="form_label" class="col-form-label">{{ filter_form.favourite.label }}:</label>
+                    <label for="form_label" class="col-form-label">{{ filter_form.favorite.label }}:</label>
                 </div>
                 <div class="col" >
-                    {{ filter_form.favourite }}
+                    {{ filter_form.favorite }}
                 </div>
             </div>
             <div class="row g-3 align-items-center">
@@ -126,8 +125,11 @@
             </div>
 
             <div class="container text-right">
-                <button class="btn btn-primary" type="submit" style="width:500px; height: 40px;">Применить фильтры
+                <button class="btn btn-primary" type="submit" style="width:500px; height: 40px; margin-top:20px">Применить фильтры
                 </button>
+            </div>
+            <div class="container text-right">
+                <a class="btn btn-warning" type="button" style="width:500px; height: 40px; margin-top:20px" href="{%url 'catalog'%}">Сбросить фильры</a>
             </div>
         </form>
     </div>

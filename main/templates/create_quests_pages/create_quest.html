@@ -40,6 +40,10 @@
         <div class="row">
             <span class="text-muted align-middle" style="margin-top:5px; font-size: 14px;"><i>Рекомендуем загружать изображения с соотношением сторон 1х1 и разрешением не менее 1024х1024.</i></span>
         </div>
+        <div class="row g-1 align-items-left" style="margin-top:10px;">
+            <label class="form-label">{{ quest_form.agelimit.label }}</label>
+            {{ quest_form.agelimit }}
+        </div>
     </div>
     <div class="position-relative" style="margin-top: 40px;">
         <button class="position-absolute top-50 end-0 col btn btn-primary text-start text-white" type="submit" style="width: 50%; height: 50px; border-radius: 2rem 0px 0px 2rem; font-size: 22px; padding-left: 30px;"><i><strong>Сохранить и продолжить</strong></i></button>
